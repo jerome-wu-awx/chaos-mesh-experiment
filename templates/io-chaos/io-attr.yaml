@@ -1,0 +1,20 @@
+apiVersion: chaos-mesh.org/v1alpha1
+kind: IoChaos
+metadata:
+  name: io-attr-example
+spec:
+  action: attrOverride
+  attr:
+    perm: 0
+  mode: one
+  selector:
+    namespaces:
+      - default
+    labelSelectors:
+      app: scaffold-a
+  volumePath: /tmp/scaffold/
+  path: ''
+  percent: 100
+  #duration: '10s'
+  #scheduler:
+  #  cron: '@every 30s'

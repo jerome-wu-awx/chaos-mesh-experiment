@@ -1,0 +1,163 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: scaffold-a
+  labels:
+    app: scaffold-a
+    service: scaffold-a
+spec:
+  type: NodePort
+  ports:
+    - port: 8080
+      name: http
+      nodePort: 32080
+  selector:
+    app: scaffold-a
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: scaffold-a
+  labels:
+    app: scaffold-a
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: scaffold-a
+  template:
+    metadata:
+      labels:
+        app: scaffold-a
+    spec:
+      containers:
+        - name: scaffold
+          image: localhost:5000/scaffold:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          env:
+            - name: NAME
+              value: A
+            - name: TARGET_HOST
+              value: scaffold-b
+            - name: FILE
+              value: /tmp/scaffold/scaffold.data
+          volumeMounts:
+            - mountPath: /tmp/scaffold
+              name: scaffold
+      volumes:
+        - name: scaffold
+          hostPath:
+            path: /Users/jerome.wu/scaffold/a
+            type: Directory
+        
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: scaffold-b
+  labels:
+    app: scaffold-b
+    service: scaffold-b
+spec:
+  type: NodePort
+  ports:
+    - port: 8080
+      name: http
+      nodePort: 32180
+  selector:
+    app: scaffold-b
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: scaffold-b
+  labels:
+    app: scaffold-b
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: scaffold-b
+  template:
+    metadata:
+      labels:
+        app: scaffold-b
+    spec:
+      containers:
+        - name: scaffold
+          image: localhost:5000/scaffold:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          env:
+            - name: NAME
+              value: B
+            - name: TARGET_HOST
+              value: scaffold-c
+            - name: FILE
+              value: /tmp/scaffold/scaffold.data
+          volumeMounts:
+            - mountPath: /tmp/scaffold
+              name: scaffold
+      volumes:
+        - name: scaffold
+          hostPath:
+            path: /Users/jerome.wu/scaffold/b
+            type: Directory
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: scaffold-c
+  labels:
+    app: scaffold-c
+    service: scaffold-c
+spec:
+  type: NodePort
+  ports:
+    - port: 8080
+      name: http
+      nodePort: 32280
+  selector:
+    app: scaffold-c
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: scaffold-c
+  labels:
+    app: scaffold-c
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: scaffold-c
+  template:
+    metadata:
+      labels:
+        app: scaffold-c
+    spec:
+      containers:
+        - name: scaffold
+          image: localhost:5000/scaffold:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          env:
+            - name: NAME
+              value: C
+            - name: FILE
+              value: /tmp/scaffold/scaffold.data
+          volumeMounts:
+            - mountPath: /tmp/scaffold
+              name: scaffold
+      volumes:
+        - name: scaffold
+          hostPath:
+            path: /Users/jerome.wu/scaffold/c
+            type: Directory
+---

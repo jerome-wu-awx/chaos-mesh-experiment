@@ -1,0 +1,19 @@
+apiVersion: chaos-mesh.org/v1alpha1
+kind: NetworkChaos
+metadata:
+  name: network-corrupt-example
+  namespace: chaos-testing
+spec:
+  action: corrupt
+  mode: one
+  selector:
+    namespaces:
+      - default
+    labelSelectors:
+      "app": "scaffold-a"
+  corrupt:
+    corrupt: "100"
+    correlation: "100"
+  duration: "10s"
+  scheduler:
+    cron: "@every 10s"

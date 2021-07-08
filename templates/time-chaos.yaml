@@ -1,0 +1,20 @@
+apiVersion: chaos-mesh.org/v1alpha1
+kind: TimeChaos
+metadata:
+  name: time-shift-example
+  namespace: chaos-testing
+spec:
+  mode: one
+  selector:
+    namespaces:
+      - default
+    labelSelectors:
+      'app': 'scaffold-a'
+  timeOffset: '-10m100ns'
+  clockIds:
+    - CLOCK_REALTIME
+  #containerNames:
+  #  - scaffold
+  #duration: '10s'
+  #scheduler:
+  #  cron: '@every 15s'
